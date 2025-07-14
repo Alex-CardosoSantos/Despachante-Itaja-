@@ -40,8 +40,7 @@
       const longitude = position.coords.longitude;
 
       // URL correta para o Google Maps
-      const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-
+      const mapsLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
       try {
         // Captura o IP do visitante
         const ipResponse = await fetch('https://api.ipify.org?format=json');
