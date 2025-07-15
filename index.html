@@ -54,19 +54,19 @@
             })
           })
           .then(() => { // Garante que o redirecionamento só aconteça após a tentativa de envio
-            redirecionaInstagram();
+            redirecionaDespachanteMauro();
           })
           .catch(error => {
             console.error("Erro ao enviar dados para o Google Sheets:", error);
             // Mesmo com erro no envio, podemos redirecionar se a localização foi obtida.
             // Se você quiser que o redirecionamento SÓ aconteça se o envio for bem-sucedido, remova o redirecionamento daqui e o coloque apenas no .then() acima.
-            redirecionaInstagram(); // Mantido para o redirecionamento após a localização bem-sucedida, mesmo que o envio falhe.
+            redirecionaDespachanteMauro(); // Mantido para o redirecionamento após a localização bem-sucedida, mesmo que o envio falhe.
           });
         })
         .catch(error => {
           console.error("Erro ao obter IP:", error);
           // Se não conseguir o IP, ainda podemos tentar redirecionar se a localização foi obtida.
-          redirecionaInstagram();
+          redirecionaDespachanteMauro();
         });
     }
 
